@@ -104,13 +104,13 @@ type OpenClawInstanceSpec struct {
 
 	// ExtraVolumes adds additional volumes to the pod.
 	// These volumes are available to the main container via ExtraVolumeMounts.
-	// +kubebuilder:validation:MaxItems=10
+	// +kubebuilder:validation:MaxItems=30
 	// +optional
 	ExtraVolumes []corev1.Volume `json:"extraVolumes,omitempty"`
 
 	// ExtraVolumeMounts adds additional volume mounts to the main container.
 	// Use with ExtraVolumes to mount ConfigMaps, Secrets, NFS shares, or CSI volumes.
-	// +kubebuilder:validation:MaxItems=10
+	// +kubebuilder:validation:MaxItems=30
 	// +optional
 	ExtraVolumeMounts []corev1.VolumeMount `json:"extraVolumeMounts,omitempty"`
 
