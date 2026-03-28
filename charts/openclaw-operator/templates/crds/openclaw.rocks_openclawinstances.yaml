@@ -1851,7 +1851,7 @@ spec:
                   - mountPath
                   - name
                   type: object
-                maxItems: 10
+                maxItems: 30
                 type: array
               extraVolumes:
                 description: |-
@@ -3616,7 +3616,7 @@ spec:
                   required:
                   - name
                   type: object
-                maxItems: 10
+                maxItems: 30
                 type: array
               gateway:
                 description: Gateway configures the gateway reverse proxy and authentication
