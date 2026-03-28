@@ -2428,6 +2428,7 @@ func buildConfigRestoreCommand(instance *openclawv1alpha1.OpenClawInstance) stri
 				`const inc=JSON.parse(fs.readFileSync(c,"utf8"));`+
 				`fs.writeFileSync(t,JSON.stringify(dm(base,inc),null,2));`+
 				`fs.copyFileSync(t,e);`+
+				`fs.chmodSync(e,0o600);`+
 				`'`,
 			dst, src)
 	case instance.Spec.Config.Format == ConfigFormatJSON5:
@@ -2436,7 +2437,7 @@ func buildConfigRestoreCommand(instance *openclawv1alpha1.OpenClawInstance) stri
 		return ""
 	default:
 		// Overwrite (default) - operator-managed config always wins
-		return fmt.Sprintf("cp %s %s", src, dst)
+		return fmt.Sprintf("cp %s %s && chmod 600 %s", src, dst, dst)
 	}
 }
 
