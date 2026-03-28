@@ -5934,9 +5934,10 @@ spec:
                     description: PodSecurityContext holds pod-level security attributes
                     properties:
                       fsGroup:
-                        default: 1000
-                        description: FSGroup is a special supplemental group that
-                          applies to all containers
+                        description: |-
+                          FSGroup is a special supplemental group that applies to all containers.
+                          When omitted, no fsGroup is set on the pod security context (recommended
+                          to avoid kubelet loosening file permissions on mounted volumes).
                         format: int64
                         type: integer
                       fsGroupChangePolicy:
