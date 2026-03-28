@@ -384,8 +384,9 @@ type PodSecurityContextSpec struct {
 	// +optional
 	RunAsGroup *int64 `json:"runAsGroup,omitempty"`
 
-	// FSGroup is a special supplemental group that applies to all containers
-	// +kubebuilder:default=1000
+	// FSGroup is a special supplemental group that applies to all containers.
+	// When omitted, no fsGroup is set on the pod security context (recommended
+	// to avoid kubelet loosening file permissions on mounted volumes).
 	// +optional
 	FSGroup *int64 `json:"fsGroup,omitempty"`
 
