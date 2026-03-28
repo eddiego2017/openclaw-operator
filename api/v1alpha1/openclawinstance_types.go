@@ -273,7 +273,7 @@ type WorkspaceSpec struct {
 	InitialDirectories []string `json:"initialDirectories,omitempty"`
 
 	// AdditionalWorkspaces configures workspace files for secondary agents.
-	// Each entry seeds files to ~/.openclaw/workspace-<name>/, matching the
+	// Each entry seeds files to ~/.openclaw/workspace/<name>/, matching the
 	// workspace path configured in spec.config.raw.agents.list[].workspace.
 	// +kubebuilder:validation:MaxItems=10
 	// +optional
@@ -281,10 +281,10 @@ type WorkspaceSpec struct {
 }
 
 // AdditionalWorkspace defines a named workspace for a secondary agent.
-// The operator seeds files to ~/.openclaw/workspace-<name>/.
+// The operator seeds files to ~/.openclaw/workspace/<name>/.
 type AdditionalWorkspace struct {
 	// Name identifies this workspace. The operator seeds files to
-	// ~/.openclaw/workspace-<name>/. Must match the workspace path
+	// ~/.openclaw/workspace/<name>/. Must match the workspace path
 	// configured in spec.config.raw.agents.list[].workspace.
 	// +kubebuilder:validation:MinLength=1
 	// +kubebuilder:validation:MaxLength=63
