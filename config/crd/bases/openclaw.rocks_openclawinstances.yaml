@@ -9470,12 +9470,12 @@ spec:
                   additionalWorkspaces:
                     description: |-
                       AdditionalWorkspaces configures workspace files for secondary agents.
-                      Each entry seeds files to ~/.openclaw/workspace-<name>/, matching the
+                      Each entry seeds files to ~/.openclaw/workspace/<name>/, matching the
                       workspace path configured in spec.config.raw.agents.list[].workspace.
                     items:
                       description: |-
                         AdditionalWorkspace defines a named workspace for a secondary agent.
-                        The operator seeds files to ~/.openclaw/workspace-<name>/.
+                        The operator seeds files to ~/.openclaw/workspace/<name>/.
                       properties:
                         configMapRef:
                           description: ConfigMapRef references an external ConfigMap
