@@ -12467,13 +12467,13 @@ func TestBuildInitScript_AdditionalWorkspaces(t *testing.T) {
 
 	// shellQuote wraps each path segment in single quotes
 	// Should create the workspace directory
-	if !strings.Contains(script, "mkdir -p /data/'workspace-work'") {
-		t.Errorf("init script should create workspace-work directory, got:\n%s", script)
+	if !strings.Contains(script, "mkdir -p /data/'workspace/work'") {
+		t.Errorf("init script should create workspace/work directory, got:\n%s", script)
 	}
 
 	// Should create the tools subdirectory
-	if !strings.Contains(script, "mkdir -p /data/'workspace-work'/'tools'") {
-		t.Errorf("init script should create workspace-work/tools directory, got:\n%s", script)
+	if !strings.Contains(script, "mkdir -p /data/'workspace/work'/'tools'") {
+		t.Errorf("init script should create workspace/work/tools directory, got:\n%s", script)
 	}
 
 	// Should copy SOUL.md using namespaced key
@@ -12483,7 +12483,7 @@ func TestBuildInitScript_AdditionalWorkspaces(t *testing.T) {
 	}
 
 	// Should use seed-once semantics ([ -f ... ] || cp ...)
-	if !strings.Contains(script, "[ -f /data/'workspace-work'/'SOUL.md' ] || cp") {
+	if !strings.Contains(script, "[ -f /data/'workspace/work'/'SOUL.md' ] || cp") {
 		t.Errorf("init script should use seed-once for SOUL.md, got:\n%s", script)
 	}
 
