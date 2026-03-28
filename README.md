@@ -540,7 +540,7 @@ configMapGenerator:
 
 **Additional workspaces (multi-agent):**
 
-When running multiple agents with isolated workspaces, use `additionalWorkspaces` to seed files for each agent. Each entry seeds to `~/.openclaw/workspace-<name>/` -- set matching paths in `spec.config.raw.agents.list[].workspace`.
+When running multiple agents with isolated workspaces, use `additionalWorkspaces` to seed files for each agent. Each entry seeds to `~/.openclaw/workspace/<name>/` -- set matching paths in `spec.config.raw.agents.list[].workspace`.
 
 ```yaml
 spec:

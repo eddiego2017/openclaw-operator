@@ -767,7 +767,7 @@ func BuildInitScript(instance *openclawv1alpha1.OpenClawInstance, externalWorksp
 		sort.Slice(addlWs, func(i, j int) bool { return addlWs[i].Name < addlWs[j].Name })
 
 		for _, aw := range addlWs {
-			wsDir := fmt.Sprintf("workspace-%s", aw.Name)
+			wsDir := fmt.Sprintf("workspace/%s", aw.Name)
 
 			// Create the workspace directory
 			lines = append(lines, fmt.Sprintf("mkdir -p /data/%s", shellQuote(wsDir)))
