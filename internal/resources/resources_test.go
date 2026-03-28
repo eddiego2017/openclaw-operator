@@ -296,8 +296,8 @@ func TestBuildStatefulSet_Defaults(t *testing.T) {
 	if psc.RunAsGroup == nil || *psc.RunAsGroup != 1000 {
 		t.Errorf("pod security context: runAsGroup = %v, want 1000", psc.RunAsGroup)
 	}
-	if psc.FSGroup == nil || *psc.FSGroup != 1000 {
-		t.Errorf("pod security context: fsGroup = %v, want 1000", psc.FSGroup)
+	if psc.FSGroup != nil {
+		t.Errorf("pod security context: fsGroup = %v, want nil (no fsGroup when omitted)", psc.FSGroup)
 	}
 	if psc.SeccompProfile == nil || psc.SeccompProfile.Type != corev1.SeccompProfileTypeRuntimeDefault {
 		t.Error("pod security context: seccomp profile should be RuntimeDefault")
