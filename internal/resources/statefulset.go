@@ -162,10 +162,11 @@ func buildPodSecurityContext(instance *openclawv1alpha1.OpenClawInstance) *corev
 		} else {
 			psc.RunAsGroup = Ptr(int64(1000))
 		}
+		// FSGroup: only set when explicitly specified. When omitted, no fsGroup
+		// is applied — this prevents kubelet from loosening file permissions on
+		// mounted volumes (credentials, sessions, etc.).
 		if spec.FSGroup != nil {
 			psc.FSGroup = spec.FSGroup
-		} else {
-			psc.FSGroup = Ptr(int64(1000))
 		}
 		if spec.FSGroupChangePolicy != nil {
 			psc.FSGroupChangePolicy = spec.FSGroupChangePolicy
@@ -176,7 +177,7 @@ func buildPodSecurityContext(instance *openclawv1alpha1.OpenClawInstance) *corev
 	} else {
 		psc.RunAsUser = Ptr(int64(1000))
 		psc.RunAsGroup = Ptr(int64(1000))
-		psc.FSGroup = Ptr(int64(1000))
+		// No fsGroup set — see FSGroup comment above
 	}
 
 	return psc
