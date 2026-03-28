@@ -117,7 +117,7 @@ Each entry configures a named workspace for a secondary agent. The operator seed
 
 Per-workspace merge priority (highest wins): operator-injected `ENVIRONMENT.md` > inline `initialFiles` > external `configMapRef`. Note: `BOOTSTRAP.md`, self-configure files, and skill packs are only injected into the default workspace.
 
-The agent workspace path in `spec.config.raw.agents.list[].workspace` must match the convention `~/.openclaw/workspace-<name>` where `<name>` is the `additionalWorkspaces[].name` value.
+The agent workspace path in `spec.config.raw.agents.list[].workspace` must match the convention `~/.openclaw/workspace/<name>` where `<name>` is the `additionalWorkspaces[].name` value.
 
 ```yaml
 spec:
@@ -143,7 +143,7 @@ spec:
         list:
           - id: main
           - id: scheduler
-            workspace: "~/.openclaw/workspace-scheduler"
+            workspace: "~/.openclaw/workspace/scheduler"
 ```
 
 **GitOps example with Kustomize:**
