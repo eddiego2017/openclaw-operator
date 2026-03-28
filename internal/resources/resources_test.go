@@ -1013,7 +1013,7 @@ func TestBuildStatefulSet_PostStart_OverwriteMode(t *testing.T) {
 	if len(cmd) != 3 || cmd[0] != "sh" || cmd[1] != "-c" {
 		t.Fatalf("expected sh -c command, got %v", cmd)
 	}
-	expected := "cp /operator-config/openclaw.json /home/openclaw/.openclaw/openclaw.json"
+	expected := "cp /operator-config/openclaw.json /home/openclaw/.openclaw/openclaw.json && chmod 600 /home/openclaw/.openclaw/openclaw.json"
 	if cmd[2] != expected {
 		t.Errorf("postStart command = %q, want %q", cmd[2], expected)
 	}
@@ -1049,6 +1049,9 @@ func TestBuildStatefulSet_PostStart_MergeMode(t *testing.T) {
 	// !Array.isArray is not interpreted as bash history expansion.
 	if !strings.Contains(cmd[2], "node -e '") {
 		t.Errorf("merge mode postStart must single-quote the node -e argument to avoid bash history expansion (#162), got %q", cmd[2])
+	}
+	if !strings.Contains(cmd[2], "chmodSync(e,0o600)") {
+		t.Errorf("merge mode postStart should chmod 600 openclaw.json, got %q", cmd[2])
 	}
 }
 
@@ -1086,7 +1089,7 @@ func TestBuildStatefulSet_PostStart_ConfigMapRef(t *testing.T) {
 	// external CM's custom key, because the operator-managed CM always
 	// stores enriched config under "openclaw.json".
 	cmd := main.Lifecycle.PostStart.Exec.Command[2]
-	expected := "cp /operator-config/openclaw.json /home/openclaw/.openclaw/openclaw.json"
+	expected := "cp /operator-config/openclaw.json /home/openclaw/.openclaw/openclaw.json && chmod 600 /home/openclaw/.openclaw/openclaw.json"
 	if cmd != expected {
 		t.Errorf("postStart command = %q, want %q", cmd, expected)
 	}
