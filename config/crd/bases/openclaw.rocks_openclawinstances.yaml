@@ -9356,6 +9356,27 @@ spec:
                     - serve
                     - funnel
                     type: string
+                  outboundProxy:
+                    description: |-
+                      OutboundProxy exposes a loopback HTTP/SOCKS5 proxy from the Tailscale
+                      userspace sidecar so application containers in the same pod can reach
+                      tailnet peers without NET_ADMIN or /dev/net/tun.
+                    properties:
+                      enabled:
+                        default: false
+                        description: |-
+                          Enabled enables the Tailscale userspace outbound HTTP/SOCKS5 proxy.
+                          The proxy is only created when Tailscale itself is enabled.
+                        type: boolean
+                      listen:
+                        default: localhost:1055
+                        description: |-
+                          Listen is the loopback address where the HTTP and SOCKS5 proxy listens.
+                          Keep this bound to localhost/loopback only; binding 0.0.0.0 would expose
+                          the proxy to other pods on the cluster network.
+                        pattern: ^(localhost|127\\.0\\.0\\.1|\\[::1\\]):[0-9]{1,5}$
+                        type: string
+                    type: object
                   resources:
                     description: Resources specifies compute resources for the Tailscale
                       sidecar container.
@@ -9509,7 +9530,7 @@ spec:
                         name:
                           description: |-
                             Name identifies this workspace. The operator seeds files to
-                            ~/.openclaw/workspace-<name>/. Must match the workspace path
+                            ~/.openclaw/workspace/<name>/. Must match the workspace path
                             configured in spec.config.raw.agents.list[].workspace.
                           maxLength: 63
                           minLength: 1

@@ -721,6 +721,29 @@ type TailscaleSpec struct {
 	// Resources specifies compute resources for the Tailscale sidecar container.
 	// +optional
 	Resources ResourcesSpec `json:"resources,omitempty"`
+
+	// OutboundProxy exposes a loopback HTTP/SOCKS5 proxy from the Tailscale
+	// userspace sidecar so application containers in the same pod can reach
+	// tailnet peers without NET_ADMIN or /dev/net/tun.
+	// +optional
+	OutboundProxy TailscaleOutboundProxySpec `json:"outboundProxy,omitempty"`
+}
+
+// TailscaleOutboundProxySpec configures the Tailscale userspace outbound proxy.
+type TailscaleOutboundProxySpec struct {
+	// Enabled enables the Tailscale userspace outbound HTTP/SOCKS5 proxy.
+	// The proxy is only created when Tailscale itself is enabled.
+	// +kubebuilder:default=false
+	// +optional
+	Enabled bool `json:"enabled,omitempty"`
+
+	// Listen is the loopback address where the HTTP and SOCKS5 proxy listens.
+	// Keep this bound to localhost/loopback only; binding 0.0.0.0 would expose
+	// the proxy to other pods on the cluster network.
+	// +kubebuilder:default="localhost:1055"
+	// +kubebuilder:validation:Pattern=`^(localhost|127\\.0\\.0\\.1|\\[::1\\]):[0-9]{1,5}$`
+	// +optional
+	Listen string `json:"listen,omitempty"`
 }
 
 // TailscaleImageSpec defines the Tailscale sidecar container image

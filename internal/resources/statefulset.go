@@ -1356,6 +1356,17 @@ func buildTailscaleContainer(instance *openclawv1alpha1.OpenClawInstance) corev1
 		{Name: "TS_KUBE_SECRET", Value: TailscaleStateSecretName(instance)},
 	}
 
+	if instance.Spec.Tailscale.OutboundProxy.Enabled {
+		listen := instance.Spec.Tailscale.OutboundProxy.Listen
+		if listen == "" {
+			listen = "localhost:1055"
+		}
+		env = append(env,
+			corev1.EnvVar{Name: "TS_OUTBOUND_HTTP_PROXY_LISTEN", Value: listen},
+			corev1.EnvVar{Name: "TS_SOCKS5_SERVER", Value: listen},
+		)
+	}
+
 	// Inject TS_AUTHKEY from Secret
 	if instance.Spec.Tailscale.AuthKeySecretRef != nil {
 		secretKey := instance.Spec.Tailscale.AuthKeySecretKey

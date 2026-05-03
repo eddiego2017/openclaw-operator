@@ -7710,6 +7710,96 @@ func TestBuildStatefulSet_TailscaleSidecar(t *testing.T) {
 	}
 }
 
+func TestBuildStatefulSet_TailscaleOutboundProxy(t *testing.T) {
+	instance := newTestInstance("ts-outbound-proxy")
+	instance.Spec.Tailscale.Enabled = true
+	instance.Spec.Tailscale.OutboundProxy.Enabled = true
+
+	sts := BuildStatefulSet(instance, "", nil, nil, nil)
+	containers := sts.Spec.Template.Spec.Containers
+
+	var tsSidecar *corev1.Container
+	for i := range containers {
+		if containers[i].Name == "tailscale" {
+			tsSidecar = &containers[i]
+			break
+		}
+	}
+	if tsSidecar == nil {
+		t.Fatal("tailscale sidecar container should be present")
+	}
+
+	envMap := make(map[string]corev1.EnvVar)
+	for _, e := range tsSidecar.Env {
+		envMap[e.Name] = e
+	}
+
+	if envMap["TS_OUTBOUND_HTTP_PROXY_LISTEN"].Value != "localhost:1055" {
+		t.Errorf("TS_OUTBOUND_HTTP_PROXY_LISTEN = %q, want %q", envMap["TS_OUTBOUND_HTTP_PROXY_LISTEN"].Value, "localhost:1055")
+	}
+	if envMap["TS_SOCKS5_SERVER"].Value != "localhost:1055" {
+		t.Errorf("TS_SOCKS5_SERVER = %q, want %q", envMap["TS_SOCKS5_SERVER"].Value, "localhost:1055")
+	}
+}
+
+func TestBuildStatefulSet_TailscaleOutboundProxyCustomListen(t *testing.T) {
+	instance := newTestInstance("ts-outbound-proxy-custom")
+	instance.Spec.Tailscale.Enabled = true
+	instance.Spec.Tailscale.OutboundProxy.Enabled = true
+	instance.Spec.Tailscale.OutboundProxy.Listen = "127.0.0.1:18080"
+
+	sts := BuildStatefulSet(instance, "", nil, nil, nil)
+	containers := sts.Spec.Template.Spec.Containers
+
+	var tsSidecar *corev1.Container
+	for i := range containers {
+		if containers[i].Name == "tailscale" {
+			tsSidecar = &containers[i]
+			break
+		}
+	}
+	if tsSidecar == nil {
+		t.Fatal("tailscale sidecar container should be present")
+	}
+
+	envMap := make(map[string]corev1.EnvVar)
+	for _, e := range tsSidecar.Env {
+		envMap[e.Name] = e
+	}
+
+	if envMap["TS_OUTBOUND_HTTP_PROXY_LISTEN"].Value != "127.0.0.1:18080" {
+		t.Errorf("TS_OUTBOUND_HTTP_PROXY_LISTEN = %q, want %q", envMap["TS_OUTBOUND_HTTP_PROXY_LISTEN"].Value, "127.0.0.1:18080")
+	}
+	if envMap["TS_SOCKS5_SERVER"].Value != "127.0.0.1:18080" {
+		t.Errorf("TS_SOCKS5_SERVER = %q, want %q", envMap["TS_SOCKS5_SERVER"].Value, "127.0.0.1:18080")
+	}
+}
+
+func TestBuildStatefulSet_TailscaleOutboundProxyDisabled(t *testing.T) {
+	instance := newTestInstance("ts-outbound-proxy-disabled")
+	instance.Spec.Tailscale.Enabled = true
+
+	sts := BuildStatefulSet(instance, "", nil, nil, nil)
+	containers := sts.Spec.Template.Spec.Containers
+
+	var tsSidecar *corev1.Container
+	for i := range containers {
+		if containers[i].Name == "tailscale" {
+			tsSidecar = &containers[i]
+			break
+		}
+	}
+	if tsSidecar == nil {
+		t.Fatal("tailscale sidecar container should be present")
+	}
+
+	for _, env := range tsSidecar.Env {
+		if env.Name == "TS_OUTBOUND_HTTP_PROXY_LISTEN" || env.Name == "TS_SOCKS5_SERVER" {
+			t.Errorf("unexpected outbound proxy env var %s when outboundProxy is disabled", env.Name)
+		}
+	}
+}
+
 func TestBuildStatefulSet_TailscaleAuthKeyOnSidecar_NotMain(t *testing.T) {
 	instance := newTestInstance("ts-env-split")
 	instance.Spec.Tailscale.Enabled = true
